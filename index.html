@@ -529,80 +529,21 @@ let fleetData = FLEET; // pre-loaded, no file needed
 function loadFleetFile(input){ toast("Fleet data is built-in — no file needed!"); }
 
 async function lookupReg(){
-// ─────────────────────────────────────────────────────────────────
-// PATCH: Replace the existing lookupReg() function in your HTML with
-// this version. Find the old function (starts with "async function lookupReg")
-// and replace everything up to the closing brace with the code below.
-// ─────────────────────────────────────────────────────────────────
-
-async function lookupReg(){
   const regEl  = document.getElementById('f_reg');
   const status = document.getElementById('dvlaStatus');
   const reg    = regEl.textContent.replace(/\s+/g,'').toUpperCase().trim();
 
   if(!reg){ status.textContent=''; return; }
 
-  status.innerHTML='<span style="color:var(--muted);font-style:italic">...</span>';
-
-  // ── 1. Always try DVLA live API first — it returns make, colour AND year ──
-  try{
-    const controller = new AbortController();
-    const timeout = setTimeout(()=>controller.abort(), 5000);
-    const res = await fetch('https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':'s0oOKyNu8Za7UWRyMVA4n79Mi0GGP6Db8zhbDQQF'
-      },
-      body:JSON.stringify({registrationNumber:reg}),
-      signal:controller.signal
-    });
-    clearTimeout(timeout);
-
-    if(res.ok){
-      const d = await res.json();
-      const make   = (d.make||'').replace(/\b\w/g,c=>c.toUpperCase());
-      const colour = (d.colour||'').replace(/\b\w/g,c=>c.toUpperCase());
-      const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
-      const rFmt   = reg.length>=5 ? reg.slice(0,-3)+' '+reg.slice(-3) : reg;
-
-      // Prefer the internal fleet's descriptive model name (e.g. "Mercedes Sprinter 315 CDI Progressive")
-      // over DVLA's generic make (e.g. "Mercedes-Benz") — but always use DVLA colour & year
-      const local      = FLEET[reg];
-      const makeToUse  = (local && local[1]) ? local[1] : make;
-
-      setField('f_make',   makeToUse);
-      setField('f_colour', colour);
-      setField('f_year',   year);
-      setField('f_reg',    rFmt);
-      status.innerHTML='<span style="color:var(--green)">✓ DVLA</span>';
-      autoSave();
-      setTimeout(()=>status.textContent='', 2500);
-      return;  // done — DVLA gave us everything
-    }
-
-    if(res.status===404){
-      status.innerHTML='<span style="color:#dc2626">Not found</span>';
-      setTimeout(()=>status.textContent='', 3000);
-      // still fall through to local fleet below
-    }
-  } catch(e){
-    // CORS / network error (common when opening as a local file) — fall through to fleet
-  }
-
-  // ── 2. Fallback: internal fleet data (make only — no colour/year stored) ──
+  // 1. Try built-in fleet first (instant, no internet needed)
   const local = FLEET[reg];
   if(local){
     setField('f_make', local[1]);
     setField('f_reg',  local[0]);
-    status.innerHTML='<span style="color:var(--green)">✓ Fleet</span>';
+    status.innerHTML='<span style="color:var(--green)">✓</span>';
     autoSave();
     setTimeout(()=>status.textContent='', 2000);
-  } else {
-    status.textContent='';
-  }
-}
-
+    return;
   }
 
   // 2. Try DVLA live API (works when online / hosted)
