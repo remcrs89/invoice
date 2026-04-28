@@ -564,11 +564,20 @@ async function lookupReg(){
 
     if(res.ok){
       const d = await res.json();
-      const make   = (d.make||'').replace(/\b\w/g,c=>c.toUpperCase());
-      const colour = (d.colour||'').replace(/\b\w/g,c=>c.toUpperCase());
-      const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
+   const make   = (d.make || '').toUpperCase();
+const colour = (d.colour || '').toUpperCase();
+const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
+
+// DVLA does NOT give model → build fallback
+let model = '';
+if (d.engineCapacity) model += d.engineCapacity + 'cc ';
+if (d.fuelType) model += d.fuelType + ' ';
+if (d.typeApproval) model += d.typeApproval;
+
+// final make + model
+const makeModel = (make + ' ' + model).trim();
       const rFmt   = reg.length>=5 ? reg.slice(0,-3)+' '+reg.slice(-3) : reg;
-      setField('f_make',   make);
+      setField('f_make',   makeModel);
       setField('f_colour', colour);
       setField('f_year',   year);
       setField('f_reg',    rFmt);
