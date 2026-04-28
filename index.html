@@ -562,28 +562,27 @@ async function lookupReg(){
     });
     clearTimeout(timeout);
 
-    if(res.ok){
-      const d = await res.json();
-   const make   = (d.make || '').toUpperCase();
-const colour = (d.colour || '').toUpperCase();
-const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
+    if(res.ok){if (res.ok) {
+  const d = await res.json();
 
-// DVLA does NOT give model → build fallback
-let model = '';
-if (d.engineCapacity) model += d.engineCapacity + 'cc ';
-if (d.fuelType) model += d.fuelType + ' ';
-if (d.typeApproval) model += d.typeApproval;
+  const make   = (d.make   || '').toUpperCase();
+  const colour = (d.colour || '').toUpperCase();
+  const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
 
-// final make + model
-const makeModel = (make + ' ' + model).trim();
-      const rFmt   = reg.length>=5 ? reg.slice(0,-3)+' '+reg.slice(-3) : reg;
-      setField('f_make',   makeModel);
-      setField('f_colour', colour);
-      setField('f_year',   year);
-      setField('f_reg',    rFmt);
-      status.innerHTML='<span style="color:var(--green)">✓ DVLA</span>';
-      autoSave();
-      setTimeout(()=>status.textContent='', 2500);
+  // DVLA doesn't return model — build a fallback from available fields
+  let model = '';
+  if (d.engineCapacity) model += d.engineCapacity + 'cc ';
+  if (d.fuelType)        model += d.fuelType + ' ';
+  if (d.typeApproval)    model += d.typeApproval;
+
+  const makeModel = (make + ' ' + model).trim();
+  const rFmt = reg.length >= 5 ? reg.slice(0, -3) + ' ' + reg.slice(-3) : reg;
+
+  setField('f_make',   makeModel);
+  setField('f_colour', colour);
+  setField('f_year',   year);
+  setField('f_reg',    rFmt);
+}
     } else if(res.status===404){
       status.innerHTML='<span style="color:#dc2626">Not found</span>';
       setTimeout(()=>status.textContent='', 3000);
