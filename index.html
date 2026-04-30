@@ -326,10 +326,10 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
     </div>
     <div class="iright">
       <div class="iword">Invoice</div>
-      <div class="inv-num" contenteditable="true" id="f_invNo">VENDAM105113</div>
+      <div class="inv-num" contenteditable="true" id="f_invNo"></div>
       <div class="metas">
         <div class="mrow"><span class="mlbl">Date</span><span class="mval" contenteditable="true" id="f_date">22/04/2025</span></div>
-        <div class="mrow"><span class="mlbl">Due</span><span class="mval" contenteditable="true" id="f_due">30 days</span></div>
+        <div class="mrow"><span class="mlbl">Due</span><span class="mval" contenteditable="true" id="f_due"></span></div>
       </div>
     </div>
   </div>
@@ -354,18 +354,18 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
     <div class="dbox">
       <div class="dlbl">Vehicle Details</div>
       <div class="vgrid">
-        <span class="vk">Make / Model</span><span class="vv" contenteditable="true" id="f_make">Mercedes-Benz Sprinter</span>
+        <span class="vk">Make / Model</span><span class="vv" contenteditable="true" id="f_make"></span>
         <span class="vk">Registration</span>
         <span class="vv" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           <span contenteditable="true" id="f_reg" 
             style="min-width:80px"
             onkeydown="if(event.key==='Enter'){event.preventDefault();lookupReg()}" onblur="lookupReg()"
-            >KN74 UHA</span>
+            ></span>
           <span id="dvlaStatus" style="font-size:10px;color:var(--muted);font-style:italic"></span>
         </span>
-        <span class="vk">Year</span><span class="vv" contenteditable="true" id="f_year">2024</span>
-        <span class="vk">Colour</span><span class="vv" contenteditable="true" id="f_colour">White</span>
-        <span class="vk">Mileage</span><span class="vv" contenteditable="true" id="f_mileage">12,450</span>
+        <span class="vk">Year</span><span class="vv" contenteditable="true" id="f_year"></span>
+        <span class="vk">Colour</span><span class="vv" contenteditable="true" id="f_colour"></span>
+        <span class="vk">Mileage</span><span class="vv" contenteditable="true" id="f_mileage"></span>
       </div>
 <span id="fleetStatus"></span>
     </div>
@@ -393,10 +393,10 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
     <div>
       <div class="flbl fgreen">Payment Details</div>
       <div class="pgrid">
-        <span class="pk">Bank</span><span class="pv" contenteditable="true" id="f_bank">Lloyds Bank</span>
-        <span class="pk">Sort Code</span><span class="pv" contenteditable="true" id="f_sort">30-00-00</span>
-        <span class="pk">Account No</span><span class="pv" contenteditable="true" id="f_acct">12345678</span>
-        <span class="pk">Reference</span><span class="pv" id="f_ref">VENDAM105113</span>
+        <span class="pk">Bank</span><span class="pv" contenteditable="true" id="f_bank"></span>
+        <span class="pk">Sort Code</span><span class="pv" contenteditable="true" id="f_sort"></span>
+        <span class="pk">Account No</span><span class="pv" contenteditable="true" id="f_acct"></span>
+        <span class="pk">Reference</span><span class="pv" id="f_ref"></span>
       </div>
       <div class="flbl famber">Notes</div>
       <div class="ntxt" contenteditable="true" id="f_notes">All parts carry a 12-month warranty.<br>Labour guaranteed for 6 months.<br>Late payment subject to 5% per 30 days.<br>Thank you for your business.</div>
@@ -423,6 +423,7 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
 
   <!-- BAR -->
   <div class="ibar">
+  
     <span class="barl">Venture Rentals · Registered in England &amp; Wales · E&amp;OE</span>
     <span class="barr" id="f_footRef">VENDAM105113</span>
   </div>
@@ -432,8 +433,8 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
 <div class="hint"><span class="hdot"></span>Click any text to edit · Auto-saves in browser · Print / PDF button for clean output</div>
 
 <script>
-const DEFS={f_coAddr:'Building 157, Culham Business Park, OX14 3DA',f_coEmail:'office@venturerentals.co.uk',f_coVat:'GB 000 000 000',f_invNo:'VENDAM105113',f_date:'24/04/2026',f_due:'30 days',f_custName:'Muhammed Ibrahim Ali',f_addr1:'123 Example Street',f_addr2:'London, EC1A 1BB',f_phone:'07700 000000',f_make:'Mercedes-Benz Sprinter',f_reg:'KN74 UHA',f_year:'2024',f_colour:'White',f_mileage:'12,450',f_bank:'Lloyds Bank',f_sort:'30-00-00',f_acct:'12345678',f_notes:'The Deducted amount will be added to your next invoice<br>We offer the option to repay in instalments<br>No payment plan under £150<br>Thank you for your business.'};
-const DITEMS=[{desc:'N/S Cracked/shattered rear tail light',qty:1,price:150},{desc:'Bumper damage / scuffs',qty:1,price:90},{desc:'Repair N/S dent door',qty:1,price:320}];
+const DEFS={f_coAddr:'Building 157, Culham Business Park, OX14 3DA',f_coEmail:'office@venturerentals.co.uk',f_coVat:'GB 000 000 000',f_invNo:'VENDAM105113',f_date:'=(today)',f_due:'30 days',f_custName:'Muhammed Ibrahim Ali',f_addr1:'123 Example Street',f_addr2:'London, EC1A 1BB',f_phone:'07700 000000',f_make:'Mercedes-Benz Sprinter',f_reg:'KN74 UHA',f_year:'2024',f_colour:'White',f_mileage:'12,450',f_bank:'Lloyds Bank',f_sort:'30-00-00',f_acct:'12345678',f_notes:'The Deducted amount will be added to your next invoice<br>We offer the option to repay in instalments<br>No payment plan under £150<br>Thank you for your business.'};
+const DITEMS=[{desc:'',qty:1,price:150},{desc:'',qty:1,price:90},{desc:'',qty:1,price:320}];
 let items=[];
 const KEY='vr_inv_v4';
 
