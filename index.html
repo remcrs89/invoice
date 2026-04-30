@@ -435,26 +435,33 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
 <script>
 const _today=(()=>{const t=new Date();return String(t.getDate()).padStart(2,'0')+'/'+String(t.getMonth()+1).padStart(2,'0')+'/'+t.getFullYear();})();
 const DEFS={f_coAddr:'Building 157, Culham Business Park, OX14 3DA',f_coEmail:'office@venturerentals.co.uk',f_coVat:'',f_invNo:'',f_date:_today,f_due:'',f_custName:'',f_addr1:'',f_addr2:'',f_phone:'',f_make:'',f_reg:'',f_year:'',f_colour:'',f_mileage:'',f_bank:'',f_sort:'',f_acct:'',f_notes:'The Deducted amount will be added to your next invoice<br>We offer the option to repay in instalments<br>No payment plan under £150<br>Thank you for your business.'};
-const DITEMS=[{desc:'',qty:1,price:150},{desc:'',qty:1,price:90},{desc:'',qty:1,price:320}];
+const DITEMS=[{desc:'',qty:1,price:0}];
 let items=[];
 const KEY='vr_inv_v4';
+
+// Fields that should NEVER be restored from localStorage (always start blank)
+const RESET_FIELDS=new Set(['f_custName','f_addr1','f_addr2','f_phone','f_make','f_reg','f_year','f_colour','f_mileage','f_invNo','f_due']);
 
 function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   d=d||{};
   Object.keys(DEFS).forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
-    if(id==='f_date'){el.innerHTML=(d[id]&&d[id]!=='=(today)')?d[id]:_today;}
+    if(id==='f_date'){el.innerHTML=_today;}
+    else if(RESET_FIELDS.has(id)){el.innerHTML='';}
     else{el.innerHTML=d[id]!==undefined?d[id]:DEFS[id];}
   });
-  items=(d.items&&d.items.length)?d.items:JSON.parse(JSON.stringify(DITEMS));
+  items=JSON.parse(JSON.stringify(DITEMS));
   if(d.vatOn===false){vatOn=false;updateVatBtn();}
   render();syncRef();
 }
 
 function saveData(){
   const d={items,vatOn};
-  Object.keys(DEFS).forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.innerHTML});
+  Object.keys(DEFS).forEach(id=>{
+    if(RESET_FIELDS.has(id))return;
+    const el=document.getElementById(id);if(el)d[id]=el.innerHTML;
+  });
   try{localStorage.setItem(KEY,JSON.stringify(d));toast('✅ Saved!')}catch(e){toast('⚠️ Save failed')}
 }
 
