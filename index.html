@@ -449,7 +449,7 @@ function load(){
     const el=document.getElementById(id);if(!el)return;
     if(id==='f_date'){el.innerHTML=_today;}
     else if(RESET_FIELDS.has(id)){el.innerHTML='';}
-    else{el.innerHTML=d[id]!==undefined?d[id]:DEFS[id];}
+    else{el.innerHTML=(d[id]!==undefined && d[id]!=='')?d[id]:DEFS[id];}
   });
   items=JSON.parse(JSON.stringify(DITEMS));
   if(d.vatOn===false){vatOn=false;updateVatBtn();}
