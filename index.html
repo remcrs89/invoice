@@ -321,14 +321,14 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
       <div class="co-tagline">
         <span contenteditable="true" id="f_coAddr">Building 157, Culham Business Park, OX14 3DA</span><br>
         <span contenteditable="true" id="f_coEmail">office@venturerentals.co.uk</span> &nbsp;·&nbsp;
-        VAT: <span contenteditable="true" id="f_coVat">GB 000 000 000</span>
+        VAT: <span contenteditable="true" id="f_coVat"></span>
       </div>
     </div>
     <div class="iright">
       <div class="iword">Invoice</div>
       <div class="inv-num" contenteditable="true" id="f_invNo"></div>
       <div class="metas">
-        <div class="mrow"><span class="mlbl">Date</span><span class="mval" contenteditable="true" id="f_date">22/04/2025</span></div>
+        <div class="mrow"><span class="mlbl">Date</span><span class="mval" contenteditable="true" id="f_date"></span></div>
         <div class="mrow"><span class="mlbl">Due</span><span class="mval" contenteditable="true" id="f_due"></span></div>
       </div>
     </div>
@@ -344,11 +344,11 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
   <div class="idet">
     <div class="dbox">
       <div class="dlbl">Bill To</div>
-      <div class="dname" contenteditable="true" id="f_custName">Muhammed Ibrahim Ali</div>
+      <div class="dname" contenteditable="true" id="f_custName"></div>
       <div class="dsub">
-        <span contenteditable="true" id="f_addr1">123 Example Street</span><br>
-        <span contenteditable="true" id="f_addr2">London, EC1A 1BB</span><br>
-        <span contenteditable="true" id="f_phone">07700 000000</span>
+        <span contenteditable="true" id="f_addr1"></span><br>
+        <span contenteditable="true" id="f_addr2"></span><br>
+        <span contenteditable="true" id="f_phone"></span>
       </div>
     </div>
     <div class="dbox">
@@ -407,7 +407,7 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
       <div class="trow" id="vatRow">
         <span class="tlbl" style="display:flex;align-items:center;gap:8px;">
           VAT (20%)
-          <button id="vatToggleBtn" onclick="toggleVat()" title="Toggle VAT on/off"
+          <button id="vatToggleBtn" onclick="toggleVat(event)" title="Toggle VAT on/off"
             style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:1.5px solid var(--green);background:var(--green);color:#fff;cursor:pointer;letter-spacing:.5px;transition:all .2s;font-family:'Outfit',sans-serif"
             onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'"
             >ON</button>
@@ -425,7 +425,7 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
   <div class="ibar">
   
     <span class="barl">Venture Rentals · Registered in England &amp; Wales · E&amp;OE</span>
-    <span class="barr" id="f_footRef">VENDAM105113</span>
+    <span class="barr" id="f_footRef"></span>
   </div>
 
 </div>
@@ -433,7 +433,8 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
 <div class="hint"><span class="hdot"></span>Click any text to edit · Auto-saves in browser · Print / PDF button for clean output</div>
 
 <script>
-const DEFS={f_coAddr:'Building 157, Culham Business Park, OX14 3DA',f_coEmail:'office@venturerentals.co.uk',f_coVat:'GB 000 000 000',f_invNo:'VENDAM105113',f_date:'=(today)',f_due:'30 days',f_custName:'Muhammed Ibrahim Ali',f_addr1:'123 Example Street',f_addr2:'London, EC1A 1BB',f_phone:'07700 000000',f_make:'Mercedes-Benz Sprinter',f_reg:'KN74 UHA',f_year:'2024',f_colour:'White',f_mileage:'12,450',f_bank:'Lloyds Bank',f_sort:'30-00-00',f_acct:'12345678',f_notes:'The Deducted amount will be added to your next invoice<br>We offer the option to repay in instalments<br>No payment plan under £150<br>Thank you for your business.'};
+const _today=(()=>{const t=new Date();return String(t.getDate()).padStart(2,'0')+'/'+String(t.getMonth()+1).padStart(2,'0')+'/'+t.getFullYear();})();
+const DEFS={f_coAddr:'Building 157, Culham Business Park, OX14 3DA',f_coEmail:'office@venturerentals.co.uk',f_coVat:'',f_invNo:'',f_date:_today,f_due:'',f_custName:'',f_addr1:'',f_addr2:'',f_phone:'',f_make:'',f_reg:'',f_year:'',f_colour:'',f_mileage:'',f_bank:'',f_sort:'',f_acct:'',f_notes:'The Deducted amount will be added to your next invoice<br>We offer the option to repay in instalments<br>No payment plan under £150<br>Thank you for your business.'};
 const DITEMS=[{desc:'',qty:1,price:150},{desc:'',qty:1,price:90},{desc:'',qty:1,price:320}];
 let items=[];
 const KEY='vr_inv_v4';
@@ -441,9 +442,13 @@ const KEY='vr_inv_v4';
 function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   d=d||{};
-  Object.keys(DEFS).forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=d[id]!==undefined?d[id]:DEFS[id]});
+  Object.keys(DEFS).forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    if(id==='f_date'){el.innerHTML=(d[id]&&d[id]!=='=(today)')?d[id]:_today;}
+    else{el.innerHTML=d[id]!==undefined?d[id]:DEFS[id];}
+  });
   items=(d.items&&d.items.length)?d.items:JSON.parse(JSON.stringify(DITEMS));
-  if(d.vatOn===false){vatOn=false;const btn=document.getElementById('vatToggleBtn');if(btn){btn.textContent='OFF';btn.style.background='transparent';btn.style.color='var(--muted)';btn.style.borderColor='var(--muted)';}const vatVal=document.getElementById('vat');if(vatVal)vatVal.style.opacity='0.35';}
+  if(d.vatOn===false){vatOn=false;updateVatBtn();}
   render();syncRef();
 }
 
@@ -474,17 +479,23 @@ function del(i){if(items.length===1){items[0]={desc:'',qty:1,price:0};render();r
 
 let vatOn=true;
 
-function toggleVat(){
-  vatOn=!vatOn;
+function updateVatBtn(){
   const btn=document.getElementById('vatToggleBtn');
   if(btn){
     btn.textContent=vatOn?'ON':'OFF';
     btn.style.background=vatOn?'var(--green)':'transparent';
     btn.style.color=vatOn?'#fff':'var(--muted)';
     btn.style.borderColor=vatOn?'var(--green)':'var(--muted)';
+    btn.style.opacity='1';
   }
   const vatVal=document.getElementById('vat');
   if(vatVal)vatVal.style.opacity=vatOn?'1':'0.35';
+}
+
+function toggleVat(e){
+  if(e)e.stopPropagation();
+  vatOn=!vatOn;
+  updateVatBtn();
   calc();autoSave();
 }
 
@@ -563,27 +574,26 @@ async function lookupReg(){
     });
     clearTimeout(timeout);
 
-    if(res.ok{
-  const d = await res.json();
+    if(res.ok){
+      const d = await res.json();
 
-  const make   = (d.make   || '').toUpperCase();
-  const colour = (d.colour || '').toUpperCase();
-  const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
+      const make   = (d.make   || '').toUpperCase();
+      const colour = (d.colour || '').toUpperCase();
+      const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
 
-  // DVLA doesn't return model — build a fallback from available fields
-  let model = '';
-  if (d.engineCapacity) model += d.engineCapacity + 'cc ';
-  if (d.fuelType)        model += d.fuelType + ' ';
-  if (d.typeApproval)    model += d.typeApproval;
+      // DVLA doesn't return model — build a fallback from available fields
+      let model = '';
+      if (d.engineCapacity) model += d.engineCapacity + 'cc ';
+      if (d.fuelType)        model += d.fuelType + ' ';
+      if (d.typeApproval)    model += d.typeApproval;
 
-  const makeModel = (make + ' ' + model).trim();
-  const rFmt = reg.length >= 5 ? reg.slice(0, -3) + ' ' + reg.slice(-3) : reg;
+      const makeModel = (make + ' ' + model).trim();
+      const rFmt = reg.length >= 5 ? reg.slice(0, -3) + ' ' + reg.slice(-3) : reg;
 
-  setField('f_make',   makeModel);
-  setField('f_colour', colour);
-  setField('f_year',   year);
-  setField('f_reg',    rFmt);
-}
+      setField('f_make',   makeModel);
+      setField('f_colour', colour);
+      setField('f_year',   year);
+      setField('f_reg',    rFmt);
     } else if(res.status===404){
       status.innerHTML='<span style="color:#dc2626">Not found</span>';
       setTimeout(()=>status.textContent='', 3000);
