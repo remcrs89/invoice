@@ -570,7 +570,7 @@ async function lookupReg(){
   try{
     const controller = new AbortController();
     const timeout = setTimeout(()=>controller.abort(), 5000);
-    const res = await fetch('https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles',{
+    const res = await fetch('https://corsproxy.io/?https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles',{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
