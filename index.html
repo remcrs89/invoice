@@ -554,28 +554,22 @@ async function lookupReg(){
 
   if(!reg){ status.textContent=''; return; }
 
-  // 1. Try built-in fleet first (instant, no internet needed)
+  // 1. Try built-in fleet first — sets make/model instantly
   const local = FLEET[reg];
   if(local){
     setField('f_make', local[1]);
     setField('f_reg',  local[0]);
-    status.innerHTML='<span style="color:var(--green)">✓</span>';
     autoSave();
-    setTimeout(()=>status.textContent='', 2000);
-    return;
   }
 
-  // 2. Try DVLA live API (works when online / hosted)
+  // 2. Always call DVLA for year and colour
   status.innerHTML='<span style="color:var(--muted);font-style:italic">...</span>';
   try{
     const controller = new AbortController();
     const timeout = setTimeout(()=>controller.abort(), 5000);
-const res = await fetch('https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles',{
+    const res = await fetch('/.netlify/functions/dvla',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':'s0oOKyNu8Za7UWRyMVA4n79Mi0GGP6Db8zhbDQQF'
-      },
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({registrationNumber:reg}),
       signal:controller.signal
     });
@@ -583,34 +577,27 @@ const res = await fetch('https://driver-vehicle-licensing.api.gov.uk/vehicle-enq
 
     if(res.ok){
       const d = await res.json();
-
-      const make   = (d.make   || '').toUpperCase();
       const colour = (d.colour || '').toUpperCase();
       const year   = d.yearOfManufacture ? String(d.yearOfManufacture) : '';
-
-      // DVLA doesn't return model — build a fallback from available fields
-      let model = '';
-      if (d.engineCapacity) model += d.engineCapacity + 'cc ';
-      if (d.fuelType)        model += d.fuelType + ' ';
-      if (d.typeApproval)    model += d.typeApproval;
-
-      const makeModel = (make + ' ' + model).trim();
-      const rFmt = reg.length >= 5 ? reg.slice(0, -3) + ' ' + reg.slice(-3) : reg;
-
-      setField('f_make',   makeModel);
       setField('f_colour', colour);
       setField('f_year',   year);
-      setField('f_reg',    rFmt);
+      // Only fill make from DVLA if not a fleet vehicle
+      if(!local){
+        const make = (d.make || '').toUpperCase();
+        setField('f_make', make);
+        const rFmt = reg.length >= 5 ? reg.slice(0, -3) + ' ' + reg.slice(-3) : reg;
+        setField('f_reg', rFmt);
+      }
+      status.innerHTML='<span style="color:var(--green)">✓</span>';
+      setTimeout(()=>status.textContent='', 2000);
+      autoSave();
     } else if(res.status===404){
       status.innerHTML='<span style="color:#dc2626">Not found</span>';
       setTimeout(()=>status.textContent='', 3000);
     } else {
-      // Any other error — just clear silently
       status.textContent='';
     }
   } catch(e){
-    // CORS / network error when running as local file — just clear silently
-    // Fleet lookup already handled above; manual entry still works fine
     status.textContent='';
   }
 }
