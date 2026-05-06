@@ -298,7 +298,44 @@ td.amt{text-align:right;font-family:'DM Mono',monospace;font-size:13px;font-weig
   .status-strip{background:#3a6b35!important}
   [contenteditable]{background:none!important;box-shadow:none!important}
 }
+  /* ── MOBILE ── */
+@media (max-width: 640px) {
+
+  body { padding: 10px 8px 40px; }
+
+  /* Header stacks vertically */
+  .ihead {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  .iright { text-align: left; }
+  .mval { min-width: auto; }
+
+  /* Bill To / Vehicle stacks vertically */
+  .idet { grid-template-columns: 1fr; }
+  .dbox { padding: 14px 16px; border-right: none; border-bottom: 1px solid var(--mid); }
+
+  /* Status strip wraps */
+  .status-strip { padding: 7px 16px; flex-wrap: wrap; gap: 4px; }
+
+  /* Table scrolls horizontally */
+  .twrap { padding: 0 8px; overflow-x: auto; }
+
+  /* Footer stacks vertically */
+  .ifoot {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  /* Bottom bar stacks */
+  .ibar { flex-direction: column; gap: 4px; padding: 10px 16px; }
+
+  /* Toolbar wraps */
+  .toolbar { padding: 0 8px; }
+  .btn { padding: 7px 12px; font-size: 12px; }
+}
 </style>
+
 </head>
 <body>
 
