@@ -561,9 +561,8 @@ let st;function autoSave(){clearTimeout(st);st=setTimeout(saveData,1500)}
 document.querySelectorAll('[contenteditable]').forEach(el=>el.addEventListener('input',autoSave));
 
 function newInvoice(){
-  if(!confirm('Start a new blank invoice?'))return;
-  const el=document.getElementById('f_invNo'),cur=el.textContent.trim(),m=cur.match(/(\d+)$/);
-  if(m)el.textContent=cur.replace(/\d+$/,String(parseInt(m[1])+1).padStart(m[1].length,'0'));
+    // 2. Clear invoice number
+  document.getElementById('f_invNo').textContent='';
   ['f_custName','f_addr1','f_addr2','f_phone','f_make','f_reg','f_year','f_colour','f_mileage'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=''});
   const today=new Date();
   const dd=String(today.getDate()).padStart(2,'0');
